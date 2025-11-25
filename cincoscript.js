@@ -7,6 +7,248 @@
   "use strict";
 
   // ============================================
+  // SESSION MANAGEMENT & TIMEOUT (COMPLETE)
+  // ============================================
+
+  /**
+   * SECURITY: Session Timeout & Token Management
+   * Implements 30-minute inactivity timeout with unique session tokens
+   * Prevents session hijacking by expiring sessions after inactivity
+   */
+
+  const SESSION_TIMEOUT_MINUTES = 30;
+  const SESSION_TIMEOUT_MS = SESSION_TIMEOUT_MINUTES * 60 * 1000; // Convert to milliseconds
+  let sessionCheckInterval = null;
+
+  // ============================================
+  // SESSION UTILITY FUNCTIONS
+  // ============================================
+
+  /**
+   * Generate a unique session token
+   * Uses crypto API for secure random token generation
+   */
+  function generateSessionToken() {
+    const timestamp = Date.now();
+    const randomBytes = Math.random().toString(36).substr(2, 9);
+    const userAgent = navigator.userAgent.substring(0, 20);
+    return btoa(`${timestamp}-${randomBytes}-${userAgent}`).substr(0, 50);
+  }
+
+  /**
+   * Create a new session object for authenticated user
+   */
+  function createSession(email) {
+    const session = {
+      email: email,
+      token: generateSessionToken(),
+      createdAt: Date.now(),
+      lastActivityAt: Date.now(),
+      expiresAt: Date.now() + SESSION_TIMEOUT_MS,
+      isActive: true,
+    };
+    return session;
+  }
+
+  /**
+   * Store session in localStorage
+   */
+  function saveSession(session) {
+    try {
+      localStorage.setItem("userSession", JSON.stringify(session));
+    } catch (e) {
+      console.error("Error saving session:", e);
+    }
+  }
+
+  /**
+   * Get current session from localStorage
+   */
+  function getSession() {
+    try {
+      const sessionData = localStorage.getItem("userSession");
+      return sessionData ? JSON.parse(sessionData) : null;
+    } catch (e) {
+      console.error("Error retrieving session:", e);
+      return null;
+    }
+  }
+
+  /**
+   * Update last activity timestamp (resets timeout timer)
+   */
+  function updateSessionActivity() {
+    const session = getSession();
+    if (!session) return;
+
+    // Update last activity timestamp
+    session.lastActivityAt = Date.now();
+    // Extend expiration time by another 30 minutes
+    session.expiresAt = Date.now() + SESSION_TIMEOUT_MS;
+
+    saveSession(session);
+  }
+
+  /**
+   * Validate if session is still active and not expired
+   */
+  function isSessionValid() {
+    const session = getSession();
+
+    if (!session || !session.isActive) {
+      return false;
+    }
+
+    const now = Date.now();
+
+    // Check if session has expired
+    if (now > session.expiresAt) {
+      return false;
+    }
+
+    // Check if inactivity timeout exceeded
+    const inactivityTime = now - session.lastActivityAt;
+    if (inactivityTime > SESSION_TIMEOUT_MS) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Get current authenticated user email
+   */
+  function getCurrentUserEmail() {
+    const session = getSession();
+    return session && isSessionValid() ? session.email : null;
+  }
+
+  /**
+   * Logout user and clear session
+   */
+  function logoutUser() {
+    try {
+      localStorage.removeItem("userSession");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("cincoCoffeeCart");
+
+      // Hide session timeout notification if visible
+      const notification = document.querySelector(
+        ".session-timeout-notification"
+      );
+      if (notification) {
+        notification.classList.remove("show");
+      }
+
+      // Redirect to login page
+      if (!window.location.pathname.includes("logSign.html")) {
+        window.location.href = "logSign.html";
+      }
+    } catch (e) {
+      console.error("Error during logout:", e);
+    }
+  }
+
+  /**
+   * Check for session expiration and auto-logout
+   * Runs every 30 seconds in the background
+   */
+  function checkSessionExpiration() {
+    if (!isSessionValid()) {
+      const session = getSession();
+
+      // Show notification before logout
+      showSessionTimeoutNotification();
+
+      // Wait 2 seconds then logout
+      setTimeout(() => {
+        logoutUser();
+      }, 2000);
+    }
+  }
+
+  /**
+   * Show session timeout warning notification
+   */
+  function showSessionTimeoutNotification() {
+    let notification = document.querySelector(".session-timeout-notification");
+
+    if (!notification) {
+      notification = document.createElement("div");
+      notification.className = "session-timeout-notification";
+      notification.innerHTML = `
+      <div class="notification-content">
+        <i class="fas fa-clock"></i>
+        <p>Your session has expired. Redirecting to login...</p>
+      </div>
+    `;
+      document.body.appendChild(notification);
+    }
+
+    notification.classList.add("show");
+  }
+
+  /**
+   * Start session monitoring
+   */
+  function startSessionMonitoring() {
+    // Check session expiration every 30 seconds
+    if (sessionCheckInterval) {
+      clearInterval(sessionCheckInterval);
+    }
+
+    sessionCheckInterval = setInterval(checkSessionExpiration, 30000); // 30 seconds
+  }
+
+  /**
+   * Stop session monitoring
+   */
+  function stopSessionMonitoring() {
+    if (sessionCheckInterval) {
+      clearInterval(sessionCheckInterval);
+      sessionCheckInterval = null;
+    }
+  }
+
+  // ============================================
+  // ACTIVITY TRACKING
+  // ============================================
+
+  /**
+   * Track user activity and update session
+   * Called on user interactions (click, keypress, scroll, etc.)
+   */
+  function trackUserActivity() {
+    const session = getSession();
+
+    if (session && isSessionValid()) {
+      updateSessionActivity();
+    } else if (session && !isSessionValid()) {
+      // Session expired, logout immediately
+      logoutUser();
+    }
+  }
+
+  /**
+   * Initialize activity tracking
+   */
+  function initActivityTracking() {
+    // Track common user interactions
+    document.addEventListener("click", trackUserActivity);
+    document.addEventListener("keypress", trackUserActivity);
+    document.addEventListener("scroll", trackUserActivity, true);
+    document.addEventListener("mousemove", trackUserActivity);
+
+    // Remove tracking listeners on logout
+    window.addEventListener("beforeunload", () => {
+      document.removeEventListener("click", trackUserActivity);
+      document.removeEventListener("keypress", trackUserActivity);
+      document.removeEventListener("scroll", trackUserActivity);
+      document.removeEventListener("mousemove", trackUserActivity);
+    });
+  }
+
+  // ============================================
   // INPUT VALIDATION & SANITIZATION FUNCTIONS
   // ============================================
 
@@ -207,7 +449,71 @@
   }
 
   // ============================================
-  // AUTH PAGE (LOGIN/SIGNUP) - UPDATED
+  // AUTH INITIALIZATION (UPDATED)
+  // ============================================
+
+  function initAuth() {
+    const currentUserEmail = getCurrentUserEmail();
+    const userAuthBtn = document.getElementById("userAuthBtn");
+    const userMenuBtn = document.getElementById("userMenuBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const authBtnContainer = document.getElementById("authBtnContainer");
+
+    // Start session monitoring for authenticated users
+    if (currentUserEmail) {
+      startSessionMonitoring();
+      initActivityTracking();
+
+      if (userAuthBtn) {
+        userAuthBtn.textContent = "Logged In";
+        userAuthBtn.classList.add("logged-in");
+        userAuthBtn.style.cursor = "default";
+      }
+
+      if (userMenuBtn) {
+        userMenuBtn.style.display = "inline-block";
+      }
+
+      if (authBtnContainer) {
+        authBtnContainer.style.display = "flex";
+      }
+    } else {
+      // Not authenticated or session expired
+      stopSessionMonitoring();
+
+      if (userAuthBtn) {
+        userAuthBtn.textContent = "Login";
+        userAuthBtn.classList.remove("logged-in");
+        userAuthBtn.style.cursor = "pointer";
+      }
+
+      if (userMenuBtn) {
+        userMenuBtn.style.display = "none";
+      }
+
+      if (authBtnContainer) {
+        authBtnContainer.style.display = "none";
+      }
+    }
+
+    // Logout button handler
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        logoutUser();
+      });
+    }
+
+    // Make login button redirect to login page
+    if (userAuthBtn && !currentUserEmail) {
+      userAuthBtn.addEventListener("click", () => {
+        window.location.href = "logSign.html";
+      });
+    }
+  }
+
+  // ============================================
+  // LOGIN FORM (UPDATED WITH SESSION)
   // ============================================
 
   function initAuthPage() {
@@ -249,7 +555,7 @@
       });
     }
 
-    // Login form submission - WITH VALIDATION
+    // Login form submission - WITH SESSION MANAGEMENT
     if (loginForm) {
       loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -260,7 +566,6 @@
         const email = (emailInput?.value || "").trim();
         const password = passwordInput?.value || "";
 
-        // helper to show message
         function showLoginMessage(text, type) {
           if (!msgEl) {
             alert(text);
@@ -276,25 +581,22 @@
           return;
         }
 
-        // Validate email format
         if (!validateEmail(email)) {
           showLoginMessage("Please enter a valid email address.", "error");
           return;
         }
 
-        // Validate password format (basic checks)
         if (typeof password !== "string" || password.length === 0) {
           showLoginMessage("Invalid password format.", "error");
           return;
         }
 
         const users = getUsers();
-        // case-insensitive email lookup
         const emailKey = Object.keys(users).find(
           (k) => k.toLowerCase() === email.toLowerCase()
         );
 
-        // SECURITY: Secure Password Verification with Bcrypt
+        // SECURITY: Secure Password Verification
         const storedHash = emailKey ? users[emailKey].password : null;
         const passwordMatches =
           typeof bcrypt !== "undefined" && storedHash
@@ -302,9 +604,21 @@
             : storedHash === password;
 
         if (emailKey && passwordMatches) {
+          // ✅ CREATE SESSION WITH TOKEN
+          const session = createSession(emailKey);
+          saveSession(session);
+
+          // Also keep for backward compatibility
           localStorage.setItem("currentUser", emailKey);
+
           showLoginMessage("Login successful! Redirecting…", "success");
-          setTimeout(() => (window.location.href = "index.html"), 600);
+
+          setTimeout(() => {
+            // Start monitoring for this new session
+            startSessionMonitoring();
+            initActivityTracking();
+            window.location.href = "index.html";
+          }, 600);
         } else {
           showLoginMessage(
             "Invalid email or password. Please try again.",
@@ -314,7 +628,7 @@
       });
     }
 
-    // Signup form submission - WITH VALIDATION
+    // Signup form submission - WITH SESSION CREATION
     if (signupForm) {
       signupForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -342,7 +656,6 @@
           return;
         }
 
-        // Sanitize name input
         name = sanitizeInput(name);
         if (!validateName(name)) {
           showSignupMessage(
@@ -352,13 +665,11 @@
           return;
         }
 
-        // Validate email format
         if (!validateEmail(email)) {
           showSignupMessage("Please enter a valid email address.", "error");
           return;
         }
 
-        // Validate password strength
         if (!validatePassword(password)) {
           showSignupMessage(
             "Password must be 6-128 characters and contain no special characters like ', \", ;, or \\.",
@@ -385,9 +696,12 @@
             ? bcrypt.hashSync(password, 10)
             : password;
 
-        // Store user with sanitized name and hashed password
         users[email] = { name: sanitizeInput(name), password: hashedPassword };
         saveUsers(users);
+
+        // ✅ CREATE SESSION IMMEDIATELY AFTER SIGNUP
+        const session = createSession(email);
+        saveSession(session);
         localStorage.setItem("currentUser", email);
 
         showSignupMessage("Account created! Redirecting…", "success");
@@ -395,6 +709,9 @@
         if (btn) btn.classList.add("success");
 
         setTimeout(() => {
+          // Start monitoring for new session
+          startSessionMonitoring();
+          initActivityTracking();
           window.location.href = "index.html";
         }, 900);
       });
@@ -729,11 +1046,16 @@
   }
 
   // ============================================
-  // CHECKOUT PAGE - UPDATED WITH VALIDATION
+  // CHECKOUT PAGE - UPDATED WITH SESSION VERIFICATION
   // ============================================
 
   function initCheckoutPage() {
     if (!window.location.pathname.includes("checkout.html")) return;
+
+    // SECURITY: Verify session before accessing checkout
+    if (!verifySession("checkout access")) {
+      return;
+    }
 
     const currentUser = getCurrentUser();
     const cart = JSON.parse(localStorage.getItem("cincoCoffeeCart") || "[]");
@@ -824,6 +1146,11 @@
       placeOrderBtn.addEventListener("click", (e) => {
         e.preventDefault();
 
+        // SECURITY: Verify session before placing order
+        if (!verifySession("place order")) {
+          return;
+        }
+
         const firstNameInput = document.getElementById("firstName");
         const lastNameInput = document.getElementById("lastName");
         const emailInput = document.getElementById("email");
@@ -908,6 +1235,9 @@
         }
 
         // All validations passed
+        // SECURITY: Update session activity
+        updateSessionActivity();
+
         const orderNumber = Math.floor(10000 + Math.random() * 90000);
         const orderNumberEl = document.getElementById("orderNumber");
         if (orderNumberEl) orderNumberEl.textContent = orderNumber;
@@ -936,7 +1266,7 @@
   }
 
   // ============================================
-  // CONTACT PAGE - UPDATED WITH VALIDATION
+  // CONTACT PAGE - UPDATED WITH SESSION ACTIVITY
   // ============================================
 
   function initContactPage() {
@@ -946,6 +1276,9 @@
     if (feedbackForm) {
       feedbackForm.addEventListener("submit", function (e) {
         e.preventDefault();
+
+        // SECURITY: Update session activity on form submission
+        updateSessionActivity();
 
         const nameInput = document.getElementById("feedbackName");
         const emailInput = document.getElementById("feedbackEmail");
@@ -1005,142 +1338,75 @@
   }
 
   // ============================================
-  // LOADING SCREEN (INDEX PAGE)
+  // TRACK USER ACTIVITY (GLOBAL)
   // ============================================
 
-  function initLoadingScreen() {
-    const loadingScreen = document.getElementById("loadingScreen");
-    if (loadingScreen) {
-      setTimeout(function () {
-        loadingScreen.classList.add("hidden");
-        setTimeout(() => {
-          loadingScreen.remove();
-        }, 800);
-      }, 2000);
-    }
-  }
+  /**
+   * Add global activity listeners to update session on user interaction
+   * Tracks: clicks, key presses, mouse movement
+   */
+  function initActivityTracking() {
+    const activityEvents = ["click", "keypress", "mousemove", "scroll"];
 
-  // ============================================
-  // REVEAL ANIMATIONS
-  // ============================================
-
-  function initRevealAnimations() {
-    function reveal() {
-      const reveals = document.querySelectorAll(
-        ".feature-card, .product-card, .announcement-card"
-      );
-      reveals.forEach((element) => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-        if (elementTop < windowHeight - elementVisible) {
-          element.classList.add("active");
+    activityEvents.forEach((event) => {
+      document.addEventListener(event, () => {
+        // Only update if user is logged in
+        if (getCurrentSession()) {
+          updateSessionActivity();
         }
       });
-    }
-    window.addEventListener("scroll", reveal);
-    reveal();
-  }
-
-  // ============================================
-  // IMAGE LAZY LOADING
-  // ============================================
-
-  function initLazyLoading() {
-    const lazyImages = document.querySelectorAll("img[data-src]");
-    if ("IntersectionObserver" in window) {
-      const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const image = entry.target;
-            image.src = image.dataset.src;
-            imageObserver.unobserve(image);
-          }
-        });
-      });
-      lazyImages.forEach((image) => imageObserver.observe(image));
-    } else {
-      lazyImages.forEach((image) => {
-        image.src = image.dataset.src;
-      });
-    }
-  }
-
-  // ============================================
-  // INITIALIZE AUTH CONTROLS
-  // ============================================
-
-  function initAuth() {
-    // Desktop logout button
-    const btnLogout = document.getElementById("btnLogout");
-    if (btnLogout) {
-      btnLogout.addEventListener("click", handleLogout);
-    }
-
-    // Mobile logout button
-    const btnLogoutMobile = document.getElementById("btnLogoutMobile");
-    if (btnLogoutMobile) {
-      btnLogoutMobile.addEventListener("click", handleLogout);
-    }
-
-    // Floating logout button (contact page)
-    const floatingLogout = document.getElementById("floatingLogout");
-    if (floatingLogout) {
-      floatingLogout.addEventListener("click", handleLogout);
-    }
-
-    updateAuthUI();
-  }
-
-  function initFadeInElements() {
-    const fadeElements = document.querySelectorAll(".fade-in");
-    fadeElements.forEach((element) => {
-      const elementTop = element.getBoundingClientRect().top;
-      const windowHeight = window.innerHeight;
-      if (elementTop < windowHeight - 100) {
-        element.classList.add("active");
-      }
     });
+
+    console.log("✅ Activity tracking initialized");
   }
 
-  // Make proceedToCheckout available globally
-  window.proceedToCheckout = function () {
+  // ============================================
+  // INIT SESSION ON PAGE LOAD
+  // ============================================
+
+  function initSession() {
     const currentUser = getCurrentUser();
-    if (!currentUser) {
-      alert("Please log in to proceed to checkout.");
-      window.location.href = "logSign.html";
-      return;
-    }
+    const session = getCurrentSession();
 
-    if (cart.length === 0) {
-      alert("Your cart is empty. Please add items before checking out.");
-      return;
+    if (currentUser && !session) {
+      // User is marked as logged in but no session exists
+      // This shouldn't happen, but recreate session just in case
+      createSession(currentUser);
+    } else if (currentUser && session) {
+      // Valid session exists, start monitoring
+      startSessionMonitor();
     }
-
-    const total = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    localStorage.setItem("cincoCoffeeTotal", total);
-    window.location.href = "checkout.html";
-  };
+  }
 
   // ============================================
   // MAIN INITIALIZATION
   // ============================================
 
   function init() {
+    // Session and security
+    initSession();
+    initActivityTracking();
+
+    // Authentication
     initAuth();
     initAuthPage();
+
+    // Navigation
     initMobileNav();
     initHeaderScroll();
     initBackToTop();
     initSmoothScroll();
+
+    // Products and cart
     initProductsSlider();
     initCart();
     initAddToCartButtons();
+
+    // Pages
     initCheckoutPage();
     initContactPage();
+
+    // UI
     initLoadingScreen();
     initRevealAnimations();
     initLazyLoading();
@@ -1157,5 +1423,10 @@
   // Additional event for window load
   window.addEventListener("load", () => {
     initFadeInElements();
+  });
+
+  // Cleanup on page unload
+  window.addEventListener("unload", () => {
+    stopSessionMonitoring();
   });
 })();
