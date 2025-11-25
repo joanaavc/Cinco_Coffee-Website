@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cinco Coffee - Your On-The-Go Coffee Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="cincostyles.css" />
+  </head>
+  <body>
+    <!-- Circular Logo Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loading-circle">
+        <img src="assets/logo.png" alt="Cinco Coffee" class="circular-logo" />
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="nav-container">
+          <a href="index.html" class="logo">
+            <i class="fas fa-coffee logo-img"></i>
+            Cinco<span>Coffee</span>
+          </a>
+
+          <!-- Desktop User Controls (Upper Right) -->
+          <div id="userControls" style="display: none"></div>
+
+          <nav>
+            <ul class="nav-links">
+              <li id="mobileUserGreeting"></li>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about us.html">About Us</a></li>
+              <li><a href="productupdate.html">Products</a></li>
+              <li><a href="announcements.html">Announcements</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </nav>
+
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-content">
+        <h1>Fuel Your Day, <em>Wherever You Wander</em></h1>
+        <p>
+          Introducing your new essential: Cinco's On-The-Go Coffee! Premium
+          coffee experiences designed for your lifestyle.
+        </p>
+        <div class="hero-btns">
+          <a href="productupdate.html" class="btn">Explore Our Products</a>
+          <a href="contact.html" class="btn btn-transparent">Find Us</a>
+          <a id="authBtn" href="logSign.html" class="btn btn-accent"
+            >Sign Up / Log In</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+      <div class="container about-container">
+        <div class="about-img">
+          <img src="assets/cinco.png" alt="Cinco Coffee Shop" />
+        </div>
+        <div class="about-content">
+          <h2 class="section-title">Our Coffee Story</h2>
+          <p>
+            Cinco Coffee was born from a passion for quality coffee and the
+            belief that great coffee shouldn't be confined to coffee shops. We
+            crafted our brand with one goal: to provide premium coffee
+            experiences for people on the move.
+          </p>
+          <p>
+            Our specially designed bottles and cups ensure your coffee stays at
+            the perfect temperature wherever your day takes you. Each brew is
+            crafted with precision and care, using ethically sourced beans and
+            the finest ingredients.
+          </p>
+          <a href="about us.html" class="btn">Learn More About Us</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="container">
+        <h2 class="section-title features-title">Why Choose Cinco Coffee?</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🌱</div>
+            <h3>Premium Quality</h3>
+            <p>
+              We use only the finest ethically sourced beans, carefully selected
+              for their distinctive flavors and aromas.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">♻️</div>
+            <h3>Eco-Friendly</h3>
+            <p>
+              Our packaging is designed with sustainability in mind, minimizing
+              our environmental footprint.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🚶</div>
+            <h3>On-The-Go</h3>
+            <p>
+              Specially designed containers keep your coffee at the perfect
+              temperature for hours, wherever you are.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🌟</div>
+            <h3>Unique Flavors</h3>
+            <p>
+              Experience our signature blends and creative flavor combinations
+              that stand out from the crowd.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Products -->
+    <section class="popular-products">
+      <div class="container">
+        <h2 class="section-title popular-title">Our Most Loved Drinks</h2>
+        <div class="products-slider">
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/sea salt latte.png" alt="Sea Salt Latte" />
+            </div>
+            <div class="product-info">
+              <h3>Sea Salt Latte</h3>
+              <p>
+                A unique combination of sweetness and a hint of salt for a rich
+                flavor experience.
+              </p>
+              <div class="product-price">
+                <span>16oz</span>
+                <span class="price-tag">₱100</span>
+              </div>
+              <div class="product-price">
+                <span>350ml</span>
+                <span class="price-tag">₱100</span>
+              </div>
+              <button
+                class="btn add-to-cart"
+                data-name="Sea Salt Latte"
+                data-price="100"
+                data-img="assets/sea salt latte.png"
+                data-size="350ml"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/white choco mocha.png" alt="White Choco Mocha" />
+            </div>
+            <div class="product-info">
+              <h3>White Choco Mocha</h3>
+              <p>
+                A delicious blend of espresso, white chocolate, and steamed
+                milk.
+              </p>
+              <div class="product-price">
+                <span>16oz</span>
+                <span class="price-tag">₱100</span>
+              </div>
+              <div class="product-price">
+                <span>350ml</span>
+                <span class="price-tag">₱100</span>
+              </div>
+              <button
+                class="btn add-to-cart"
+                data-name="White Choco Mocha"
+                data-price="100"
+                data-img="assets/white choco mocha.png"
+                data-size="350ml"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/spanish latte.png" alt="Spanish Latte" />
+            </div>
+            <div class="product-info">
+              <h3>Spanish Latte</h3>
+              <p>
+                A slightly sweet and rich coffee made with milk and a touch of
+                condensed milk.
+              </p>
+              <div class="product-price">
+                <span>16oz</span>
+                <span class="price-tag">₱90</span>
+              </div>
+              <div class="product-price">
+                <span>350ml</span>
+                <span class="price-tag">₱90</span>
+              </div>
+              <button
+                class="btn add-to-cart"
+                data-name="Spanish Latte"
+                data-price="90"
+                data-img="assets/spanish latte.png"
+                data-size="350ml"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/ube.png" alt="Milky Ube" />
+            </div>
+            <div class="product-info">
+              <h3>Milky Ube</h3>
+              <p>A creamy and flavorful ube drink topped with sea salt foam.</p>
+              <div class="product-price">
+                <span>16oz</span>
+                <span class="price-tag">₱90</span>
+              </div>
+              <div class="product-price">
+                <span>350ml</span>
+                <span class="price-tag">₱90</span>
+              </div>
+              <button
+                class="btn add-to-cart"
+                data-name="Milky Ube"
+                data-price="90"
+                data-img="assets/ube.png"
+                data-size="350ml"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <a href="productupdate.html" class="btn">View All Products</a>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+      <div class="container cta-content">
+        <h2>Ready to Experience Cinco Coffee?</h2>
+        <p>
+          Find our products at selected stores or order online for convenient
+          delivery. Elevate your coffee experience today!
+        </p>
+        <a href="contact.html" class="btn">Find Us</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-container">
+          <div class="footer-about">
+            <div class="footer-logo"><span>Cinco</span> Coffee</div>
+            <p>
+              Fuel your day, wherever you wander with premium on-the-go coffee
+              experiences.
+            </p>
+            <div class="footer-social">
+              <a href="https://www.facebook.com/cinco.kape"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="https://www.instagram.com/cinco.kape/"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.tiktok.com/@cinco.kape">
+                <i class="fab fa-tiktok"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about us.html">About Us</a></li>
+              <li><a href="productupdate.html">Products</a></li>
+              <li><a href="announcements.html">Announcements</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Products</h4>
+            <ul>
+              <li><a href="productupdate.html#coffee">Coffee Drinks</a></li>
+              <li>
+                <a href="productupdate.html#non-coffee">Non-Coffee Drinks</a>
+              </li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h4>Contact Us</h4>
+            <ul>
+              <li>
+                <span class="footer-contact-icon">📍</span>
+                <span>Bgy, A. Bonifacio Ave, Quezon City, Metro Manila</span>
+              </li>
+              <li>
+                <span class="footer-contact-icon">📱</span>
+                <span>09163047835</span>
+              </li>
+              <li>
+                <span class="footer-contact-icon">✉️</span>
+                <span>cinco5@gmail.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Cinco Coffee. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+      <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="cincoscript.js"></script>
+  </body>
+</html>

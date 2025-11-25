@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cinco Coffee - On-The-Go Coffee</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="cincostyles.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="nav-container">
+          <a href="index.html" class="logo">
+            <i class="fas fa-coffee logo-img"></i>
+            Cinco<span>Coffee</span>
+          </a>
+
+          <nav>
+            <ul class="nav-links">
+              <li id="mobileUserGreeting"></li>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about us.html">About Us</a></li>
+              <li><a href="productupdate.html" class="active">Products</a></li>
+              <li><a href="announcements.html">Announcements</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </nav>
+
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Product Hero Section -->
+    <section class="product-hero">
+      <div class="container">
+        <h1>Cinco's On-The-Go Coffee</h1>
+        <p>Fuel your day, wherever you wander.</p>
+      </div>
+    </section>
+
+    <!-- Cart Button -->
+    <div class="cart-btn">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count">0</span>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal">
+      <div class="cart-header">
+        <h3 class="cart-title">Your Basket</h3>
+        <span class="close-cart">&times;</span>
+      </div>
+      <div class="cart-items">
+        <!-- Cart items will be added here dynamically -->
+      </div>
+      <div class="cart-total">Total: ₱<span class="total-amount">0</span></div>
+      <button class="checkout-btn" onclick="proceedToCheckout()">
+        Proceed to Checkout
+      </button>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification">Item added to cart!</div>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+      <div class="container">
+        <h2 id="coffee" class="section-title">Coffee-Based Drinks</h2>
+
+        <!-- Coffee-Based Drinks - First Row (4 products) -->
+        <div
+          class="product-grid"
+          style="
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+          "
+        >
+          <!-- Americano -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/americano.png" alt="Americano" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Americano</h3>
+              <p class="product-description">
+                A bold and robust black coffee with a smooth finish.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱70</p>
+                <p><strong>16oz:</strong> ₱70</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Americano (350ml)"
+                  data-price="70"
+                  data-img="assets/americano.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Americano (16oz)"
+                  data-price="70"
+                  data-img="assets/americano.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Café Latte -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/cafe latte.png" alt="Café Latte" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Café Latte</h3>
+              <p class="product-description">
+                A creamy and balanced espresso-based drink with steamed milk.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱80</p>
+                <p><strong>16oz:</strong> ₱80</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Café Latte (350ml)"
+                  data-price="80"
+                  data-img="assets/cafe latte.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Café Latte (16oz)"
+                  data-price="80"
+                  data-img="assets/cafe latte.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spanish Latte -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/spanish latte.png" alt="Spanish Latte" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Spanish Latte</h3>
+              <p class="product-description">
+                A slightly sweet and rich coffee made with milk and a touch of
+                condensed milk.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱90</p>
+                <p><strong>16oz:</strong> ₱90</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Spanish Latte (350ml)"
+                  data-price="90"
+                  data-img="assets/spanish latte.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Spanish Latte (16oz)"
+                  data-price="90"
+                  data-img="assets/spanish latte.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- French Vanilla -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/french vanilla.png" alt="French Vanilla" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">French Vanilla</h3>
+              <p class="product-description">
+                A flavored coffee with a smooth vanilla essence.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱90</p>
+                <p><strong>16oz:</strong> ₱90</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="French Vanilla (350ml)"
+                  data-price="90"
+                  data-img="assets/french vanilla.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="French Vanilla (16oz)"
+                  data-price="90"
+                  data-img="assets/french vanilla.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coffee-Based Drinks - Second Row -->
+        <div
+          class="product-grid"
+          style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 60px;
+          "
+        >
+          <!-- White Choco Mocha -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/white choco mocha.png" alt="White Choco Mocha" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">White Choco Mocha</h3>
+              <p class="product-description">
+                A delicious blend of espresso, white chocolate, and steamed
+                milk.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱100</p>
+                <p><strong>16oz:</strong> ₱100</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="White Choco Mocha (350ml)"
+                  data-price="100"
+                  data-img="assets/white choco mocha.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="White Choco Mocha (16oz)"
+                  data-price="100"
+                  data-img="assets/white choco mocha.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sea Salt Latte -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/sea salt latte.png" alt="Sea Salt Latte" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Sea Salt Latte</h3>
+              <p class="product-description">
+                A unique combination of sweetness and a hint of salt for a rich
+                flavor experience.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱100</p>
+                <p><strong>16oz:</strong> ₱100</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Sea Salt Latte (350ml)"
+                  data-price="100"
+                  data-img="assets/sea salt latte.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Sea Salt Latte (16oz)"
+                  data-price="100"
+                  data-img="assets/sea salt latte.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caramel Macchiato -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/caramel macchiato.png" alt="Caramel Macchiato" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Caramel Macchiato</h3>
+              <p class="product-description">
+                A layered espresso drink with vanilla, steamed milk, and a
+                caramel drizzle.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱100</p>
+                <p><strong>16oz:</strong> ₱100</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Caramel Macchiato (350ml)"
+                  data-price="100"
+                  data-img="assets/caramel macchiato.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Caramel Macchiato (16oz)"
+                  data-price="100"
+                  data-img="assets/caramel macchiato.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 id="non-coffee" class="section-title">Non-Coffee Drinks</h2>
+
+        <!-- Non-Coffee Drinks -->
+        <div
+          class="product-grid"
+          style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+          "
+        >
+          <!-- Milky Ube -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/ube.png" alt="Milky Ube" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Milky Ube</h3>
+              <p class="product-description">
+                A creamy and flavorful ube drink topped with sea salt foam.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱90</p>
+                <p><strong>16oz:</strong> ₱90</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Milky Ube (350ml)"
+                  data-price="90"
+                  data-img="assets/ube.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Milky Ube (16oz)"
+                  data-price="90"
+                  data-img="assets/ube.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Strawberry Milk -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/strawberry.png" alt="Strawberry" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Strawberry Milk</h3>
+              <p class="product-description">
+                A refreshing and smooth strawberry-infused milk drink.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱90</p>
+                <p><strong>16oz:</strong> ₱90</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Strawberry (350ml)"
+                  data-price="90"
+                  data-img="assets/strawberry.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Strawberry (16oz)"
+                  data-price="90"
+                  data-img="assets/strawberry.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caramel Milk -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/caramel milk.png" alt="caramel milk" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Caramel Milk</h3>
+              <p class="product-description">
+                A sweet and creamy caramel-flavored milk beverage.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱90</p>
+                <p><strong>16oz:</strong> ₱90</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Caramel Milk (350ml)"
+                  data-price="90"
+                  data-img="assets/caramel milk.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Caramel Milk (16oz)"
+                  data-price="90"
+                  data-img="assets/caramel milk.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Matcha Latte -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/matcha latte.png" alt="matcha latte" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Matcha Latte</h3>
+              <p class="product-description">
+                A smooth and earthy blend of premium matcha and milk.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱100</p>
+                <p><strong>16oz:</strong> ₱100</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Matcha Latte (350ml)"
+                  data-price="100"
+                  data-img="assets/matcha latte.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Matcha Latte (16oz)"
+                  data-price="100"
+                  data-img="assets/matcha latte.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milky Choco -->
+          <div class="product-card">
+            <div class="product-img">
+              <img src="assets/milky choco.png" alt="milky choco" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Milky Choco</h3>
+              <p class="product-description">
+                A rich and indulgent chocolate milk drink.
+              </p>
+              <div class="price-info">
+                <p><strong>350ml:</strong> ₱100</p>
+                <p><strong>16oz:</strong> ₱100</p>
+              </div>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="milky choco (350ml)"
+                  data-price="100"
+                  data-img="assets/milky choco.png"
+                  data-size="350ml"
+                >
+                  Add 350ml
+                </button>
+                <button
+                  class="add-to-cart-btn"
+                  data-name="milky choco (16oz)"
+                  data-price="100"
+                  data-img="assets/milky choco.png"
+                  data-size="16oz"
+                >
+                  Add 16oz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-container">
+          <div class="footer-about">
+            <div class="footer-logo"><span>Cinco</span> Coffee</div>
+            <p>
+              Fuel your day, wherever you wander with premium on-the-go coffee
+              experiences.
+            </p>
+            <div class="footer-social">
+              <a href="https://www.facebook.com/cinco.kape"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="https://www.instagram.com/cinco.kape/"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.tiktok.com/@cinco.kape"
+                ><i class="fab fa-tiktok"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about us.html">About Us</a></li>
+              <li><a href="productupdate.html">Products</a></li>
+              <li><a href="announcements.html">Announcements</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Products</h4>
+            <ul>
+              <li><a href="productupdate.html#coffee">Coffee Drinks</a></li>
+              <li>
+                <a href="productupdate.html#non-coffee">Non-Coffee Drinks</a>
+              </li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h4>Contact Us</h4>
+            <ul>
+              <li>
+                <span class="footer-contact-icon">📍</span
+                ><span>Bgy, A. Bonifacio Ave, Quezon City, Metro Manila</span>
+              </li>
+              <li>
+                <span class="footer-contact-icon">📱</span
+                ><span>09163047835</span>
+              </li>
+              <li>
+                <span class="footer-contact-icon">✉️</span
+                ><span>cinco5@gmail.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Cinco Coffee. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+      <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="cincoscript.js"></script>
+  </body>
+</html>

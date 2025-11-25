@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign Up / Log In - Cinco Coffee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="cincostyles.css" />
+  </head>
+  <body class="auth-page-body">
+    <div class="auth-wrapper">
+      <!-- Logo Section -->
+      <div class="auth-logo">
+        <i class="fas fa-coffee"></i>
+        <h1>Cinco<span>Coffee</span></h1>
+        <p>Fuel your day, wherever you wander</p>
+      </div>
+
+      <!-- Auth Container -->
+      <div class="auth-container">
+        <!-- Tabs -->
+        <div class="auth-tabs" role="tablist" aria-label="Authentication Tabs">
+          <button
+            type="button"
+            id="tab-login"
+            class="active"
+            aria-controls="loginForm"
+          >
+            Login
+          </button>
+          <button type="button" id="tab-signup" aria-controls="signupForm">
+            Sign Up
+          </button>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+          <!-- Login Form -->
+          <form id="loginForm" class="active">
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input
+                  type="email"
+                  id="loginEmail"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input
+                  type="password"
+                  id="loginPassword"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="btnLogin">
+              Log In
+            </button>
+
+            <div
+              class="form-message"
+              id="loginMessage"
+              aria-live="polite"
+            ></div>
+
+            <div class="info-text">
+              <i class="fas fa-info-circle"></i>
+              Don't have an account? Click "Sign Up" above to create one.
+            </div>
+          </form>
+
+          <!-- Signup Form -->
+          <form id="signupForm">
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input
+                  type="text"
+                  id="signupName"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input
+                  type="email"
+                  id="signupEmail"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input
+                  type="password"
+                  id="signupPassword"
+                  placeholder="Create a password"
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="btnSignup">
+              Create Account
+            </button>
+
+            <div
+              class="form-message"
+              id="signupMessage"
+              aria-live="polite"
+            ></div>
+
+            <div class="info-text">
+              <i class="fas fa-shopping-cart"></i>
+              Create an account to add items to your cart and save them for
+              later.
+            </div>
+          </form>
+        </div>
+
+        <!-- Back Link -->
+        <div class="back-link">
+          <a href="index.html">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- bcryptjs for client-side password hashing (local copy for offline use) -->
+    <script src="assets/bcrypt.min.js"></script>
+    <script src="cincoscript.js"></script>
+  </body>
+</html>
