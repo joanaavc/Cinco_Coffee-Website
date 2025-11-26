@@ -4,7 +4,7 @@
 
 ### Step 1: Go to Google reCAPTCHA Admin Console
 
-Visit: https://www.google.com/recaptcha/admin
+Visit: [https://www.google.com/recaptcha/admin](https://www.google.com/recaptcha/admin)
 
 ### Step 2: Sign In
 
@@ -30,7 +30,7 @@ You'll see two keys:
 
 ### Step 5: Update Your Website
 
-#### In `logSign.html` (2 places):
+#### In `logSign.html`
 
 **Replace this line:**
 
@@ -44,18 +44,22 @@ You'll see two keys:
 <script src="https://www.google.com/recaptcha/api.js?render=6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2"></script>
 ```
 
-#### In `cincoscript.js`:
+#### In `cincoscript.js`
 
 **Replace this line (appears 2 times):**
 
 ```javascript
-grecaptcha.execute("6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2", { action: action });
+grecaptcha.execute("6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2", {
+  action: action,
+});
 ```
 
 **With:**
 
 ```javascript
-grecaptcha.execute("6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2", { action: action });
+grecaptcha.execute("6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2", {
+  action: action,
+});
 ```
 
 ## How It Works

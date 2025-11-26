@@ -1,240 +1,216 @@
 # Cinco Coffee Security Implementation
 
-## Solution 1: Password Encryption (Hashing) ✅
+## Overview
 
-### What I Added
-
-We replaced plain-text password storage with **bcrypt password hashing**, ensuring all passwords are cryptographically protected and unreadable even if an attacker accesses the browser's storage.
-
-### Why It Helps
-
-Plain-text passwords are one of the most dangerous security vulnerabilities. In the original system, anyone with browser access could open LocalStorage and immediately see every user's password. With bcrypt hashing:
-
-- Passwords are one-way encrypted (irreversible)
-- Each password has a unique salt
-- Attackers only see hashes like `$2b$10$KIXw...`
+This document outlines the security solutions implemented to protect user data and prevent common web vulnerabilities.
 
 ---
 
-## Solution 2: Input Validation & Sanitization ✅
+## Solution 1: Password Encryption (Bcrypt Hashing)
 
-### What I Added
+### Bcrypt Password Hashing
 
-Comprehensive input validation and sanitization across all user-facing forms, checking for dangerous characters, limiting input length, validating data types, and stripping HTML/script tags to prevent malicious inputs.
+We replaced plain-text password storage with bcrypt hashing, ensuring all passwords are cryptographically protected and unreadable even if an attacker accesses the browser's storage.
 
-### Why It Helps
+### Why Bcrypt Helps
+
+Plain-text passwords are extremely dangerous because anyone with browser access could see every user's password. With bcrypt hashing, attackers only see irreversible scrambled strings like `$2b$10$KIXw...`, directly addressing the threat of stealing user passwords.
+
+### Bcrypt Implementation Details
+
+During account creation, bcrypt cryptographically hashes passwords with unique salts. At login, the entered password is hashed and compared to the stored hash for authentication.
+
+### Bcrypt Configuration
+
+- Bcrypt library: `bcrypt.min.js`
+- Hash strength: 10 salt rounds
+- Storage: Hashed passwords in localStorage
+- Comparison: Constant-time comparison prevents timing attacks
+
+---
+
+## Solution 2: Input Validation and Sanitization
+
+### Comprehensive Input Validation
+
+We implemented comprehensive input validation and sanitization across all user-facing forms, checking for dangerous characters, limiting input length, validating data types, and stripping HTML/script tags to prevent malicious inputs.
+
+### Why Input Validation Helps
 
 The original system's lack of input validation made it vulnerable to XSS attacks where attackers could inject malicious JavaScript through forms. Our validation now detects and rejects dangerous patterns before they execute.
 
-### Protected Forms
+### Input Validation Implementation
 
-✅ Login form (email, password)  
-✅ Signup form (name, email, password)  
-✅ Checkout form (name, email, phone, address, city, zip)  
-✅ Contact form (name, email, subject, message)  
+User inputs pass through validation functions that:
 
-### Threats Prevented
+- Check length limits
+- Validate allowed characters
+- Require fields
+- Detect proper formats
+- Strip script tags, SQL commands
+- Remove suspicious characters
 
-✅ Cross-Site Scripting (XSS) attacks  
-✅ SQL Injection attacks  
-✅ Buffer overflow attacks  
-✅ HTML injection attacks  
+### Validation Functions
 
----
-
-## Solution 3: Session Timeout & Token Management ✅
-
-### What I Added
-
-Implemented automatic session timeout after 30 minutes of inactivity, tracking sessions with unique tokens that expire and require re-login.
-
-### Why It Helps
-
-The original system's indefinite login sessions made accounts vulnerable to session hijacking. With timeout limits, attackers have a maximum 30-minute window of access even if they steal credentials.
-
-### Implementation Details
-
-- **Unique Tokens**: Each session gets a cryptographically random token
-- **Activity Tracking**: Monitors clicks, keypress, scroll, mousemove
-- **Timestamp Management**: Updates on each interaction (resets timeout)
-- **Background Monitoring**: Checks expiration every 30 seconds
-- **Auto-Logout**: Forces logout + notification after 30 minutes
-- **Session Data**: Stores email, token, creation time, activity time, expiration
-
-### Protected Pages
-
-✅ All authenticated pages (auto-logout if inactive)  
-✅ Checkout (session validated before order)  
-✅ Cart (cleared on logout)  
-✅ Account pages (requires valid session)  
-
-### Threats Prevented
-
-✅ Session Hijacking - Limited to 30-minute window  
-✅ Indefinite Access - Auto-logout on timeout  
-✅ Credential Misuse - Unique token per session  
-✅ Idle Account Compromise - Activity-based timeout  
+| Function             | Purpose             | Rules                                           |
+| -------------------- | ------------------- | ----------------------------------------------- |
+| `sanitizeInput()`    | Remove HTML/scripts | Strips `<script>`, `<iframe>`, dangerous tags   |
+| `validateEmail()`    | Email validation    | Regex pattern + max 254 chars                   |
+| `validatePassword()` | Password validation | 6-128 chars, alphanumeric + symbols             |
+| `validateName()`     | Name validation     | 2-100 chars, letters/spaces/hyphens/apostrophes |
+| `validatePhone()`    | Phone validation    | 10-15 digits only                               |
 
 ---
 
-## Solution 4: Rate Limiting & reCAPTCHA v3 ✅
+## Solution 3: Session Management with Auto-Timeout
+
+### Automatic Session Timeout
+
+We implemented automatic session timeout after 30 minutes of inactivity, tracking sessions with tokens that expire and require re-login.
+
+### Why Session Timeout Helps
+
+The original system's indefinite login sessions made accounts vulnerable to session hijacking. Timeout limits attackers to 30 minutes of access even if they steal credentials.
+
+### Session Timeout Implementation
+
+Upon login:
+
+1. Session object created with email, unique token, and timestamp
+2. Timestamp updates with each interaction
+3. Background timer logs users out after 30 minutes of inactivity
+
+### Session Configuration
+
+```javascript
+const SESSION_TIMEOUT_MINUTES = 30;
+const SESSION_MONITOR_INTERVAL = 30000; // Check every 30 seconds
+```
+
+### Session Management Features
+
+- Unique token per session (cryptographically generated)
+- Automatic renewal on user activity
+- Background monitoring every 30 seconds
+- Secure logout clears all session data
+
+---
+
+## Solution 4: Rate Limiting and CAPTCHA Protection
 
 ### What I Added
-Implemented rate limiting that locks accounts for 15 minutes after 5 failed login attempts and added Google reCAPTCHA v3 to block automated bot attacks.
 
-### Why It Helps
-Rate limiting and CAPTCHA protect against brute force attacks by slowing down automated password guessing and preventing bots from submitting thousands of login attempts per minute. Attackers can no longer rapidly guess passwords—they're limited to 5 attempts every 15 minutes.
+We implemented rate limiting that locks accounts for 15 minutes after 5 failed login attempts and added Google reCAPTCHA v3 to block automated bot attacks.
 
-### Implementation Details
+### Why Rate Limiting Helps
 
-#### Rate Limiting
-- **Max Attempts**: 5 failed attempts before lockout
-- **Lockout Duration**: 15 minutes
-- **Storage**: Failed attempts tracked in localStorage
-- **Tracking**: Each email has separate attempt counter
-- **Auto-Reset**: Counter resets after successful login
+Rate limiting and CAPTCHA protect against brute force attacks by slowing down automated password guessing and preventing bots from submitting thousands of login attempts per minute.
 
-#### reCAPTCHA v3
-- **Client-Side**: Analyzes user behavior (mouse, keyboard, fingerprint)
-- **Silent Verification**: No user interaction needed
-- **Score System**: 0.0 (bot) to 1.0 (human)
-- **Threshold**: 0.5 (above = human, below = bot)
-- **Integration**: Runs on every login/signup attempt
+### Rate Limiting Implementation
 
-#### Protection Flow
-1. User attempts login
-2. reCAPTCHA analyzes behavior → generates token
-3. Form verifies reCAPTCHA token
-4. If password wrong → failed attempt recorded
-5. After 5 failures → 15-minute lockout activated
-6. Countdown timer prevents further attempts
-7. After 15 minutes → counter resets
+Failed login attempts are tracked with timestamps and trigger a 15-minute lockout after 5 failures. reCAPTCHA analyzes user behavior like mouse movements and typing patterns to assign human scores that determine if submissions are processed.
 
-### Protected Forms
-✅ Login form - reCAPTCHA + rate limiting  
-✅ Signup form - reCAPTCHA + rate limiting  
-✅ Account lockout notifications - Visual countdown timer  
-✅ Error messages - Clear feedback on remaining attempts  
+### Rate Limiting Configuration
 
-### Features
-✅ Failed attempt tracking with timestamps  
-✅ 15-minute account lockout after 5 failures  
-✅ Visual countdown timer showing lockout time  
-✅ reCAPTCHA v3 silent bot detection  
-✅ Automatic attempt reset on successful login  
-✅ Storage persistence (survives page refresh)  
-✅ Responsive lockout warnings on mobile  
+```javascript
+const RATE_LIMIT_CONFIG = {
+  MAX_FAILED_ATTEMPTS: 5,
+  LOCKOUT_DURATION_MINUTES: 15,
+  LOCKOUT_DURATION_MS: 15 * 60 * 1000,
+  RECAPTCHA_THRESHOLD: 0.5,
+};
+```
 
-### Threats Prevented
-✅ **Brute Force Attacks** - Limited to 5 attempts per 15 minutes  
-✅ **Credential Stuffing** - Rate limiting blocks rapid attempts  
-✅ **Automated Bot Attacks** - reCAPTCHA blocks non-human traffic  
-✅ **Password Guessing** - Exponential slowdown with lockouts  
-✅ **Spam Signups** - reCAPTCHA prevents bot account creation  
-✅ **Account Enumeration** - Same response for existing/non-existing emails  
+### Rate Limiting Features
 
-### Configuration
+- Max 5 failed attempts per email
+- 15-minute lockout after limit reached
+- Countdown timer display
+- Auto-clear on successful login
+- Attempts stored in localStorage with timestamps
+
+### reCAPTCHA v3 Integration
+
+- Site Key: `6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2`
+- Silent verification (no user interaction)
+- Analyzes behavioral patterns
+- Prevents bot signups and logins
+
+### Lockout Warning UI
+
+- Red warning box with countdown timer
+- Clear message: "Account locked for X minutes"
+- Attempt counter: "X attempts remaining"
+- Mobile responsive design
+
+---
+
+## Security Status Dashboard
+
+| Solution            | Status         | Coverage                                     |
+| ------------------- | -------------- | -------------------------------------------- |
+| Password Encryption | ✅ Implemented | All user passwords                           |
+| Input Validation    | ✅ Implemented | All forms (login, signup, contact, checkout) |
+| Session Management  | ✅ Implemented | 30-minute auto-timeout                       |
+| Rate Limiting       | ✅ Implemented | 5 attempts / 15-minute lockout               |
+| reCAPTCHA v3        | ✅ Implemented | All authentication forms                     |
+
+---
+
+## Threat Prevention Matrix
+
+| Threat                  | Solution           | Status | Protection                         |
+| ----------------------- | ------------------ | ------ | ---------------------------------- |
+| Stealing User Passwords | Bcrypt Hashing     | ✅     | Passwords unreadable if exposed    |
+| XSS Attacks             | Input Sanitization | ✅     | Script tags stripped, HTML escaped |
+| SQL Injection           | Input Validation   | ✅     | Dangerous patterns rejected        |
+| Session Hijacking       | Session Timeout    | ✅     | Auto-logout after 30 min           |
+| Brute Force Attacks     | Rate Limiting      | ✅     | 5 attempts / 15-min lockout        |
+| Bot Attacks             | reCAPTCHA v3       | ✅     | Behavioral analysis blocks bots    |
+| Account Enumeration     | Rate Limiting      | ✅     | Same response for all emails       |
+
+---
+
+## Custom Configuration
 
 To customize, edit `RATE_LIMIT_CONFIG` in `cincoscript.js`:
 
 ```javascript
 const RATE_LIMIT_CONFIG = {
-  MAX_FAILED_ATTEMPTS: 5,           // Change to 3 for stricter
-  LOCKOUT_DURATION_MINUTES: 15,     // Change to 30 for longer
-  RECAPTCHA_THRESHOLD: 0.5          // Change to 0.7 for stricter bot detection
+  MAX_FAILED_ATTEMPTS: 5, // Change to 3 for stricter
+  LOCKOUT_DURATION_MINUTES: 15, // Change to 30 for longer
+  RECAPTCHA_THRESHOLD: 0.5, // Change to 0.7 for stricter bot detection
 };
 ```
 
-### Setup Required
+---
 
-1. Get reCAPTCHA v3 keys from: https://www.google.com/recaptcha/admin
+## Initial Setup Required
+
+1. Get reCAPTCHA v3 keys from: [https://www.google.com/recaptcha/admin](https://www.google.com/recaptcha/admin)
 2. Replace `6LdZRhgsAAAAAA7o0EpsdmfO38VvnHxjNG6Ab0g2` in:
    - `logSign.html` (reCAPTCHA script)
    - `cincoscript.js` (in executeRecaptcha function - 2 places)
-3. See `SETUP_RECAPTCHA.md` for detailed instructions
+3. See `RECAPTCHA.md` for detailed instructions
 
-### Monitoring
+---
+
+## Security Monitoring
+
 - Check Google reCAPTCHA Admin Console for bot traffic
 - Monitor localStorage for failed attempt patterns
 - Review lockout frequency in browser console
 
-### Attack Timeline
-| Time | Event | Result |
-|------|-------|--------|
-| 0:00 | Attempt 1 fails | "4 attempts remaining" |
-| 0:05 | Attempt 2 fails | "3 attempts remaining" |
-| 0:10 | Attempt 3 fails | "2 attempts remaining" |
-| 0:15 | Attempt 4 fails | "1 attempt remaining" |
-| 0:20 | Attempt 5 fails | Account locked ❌ |
-| 0:25 | Attempt 6 | "Locked for 14:35" |
-| 15:00 | Timer expires | Account unlocked ✅ |
-
 ---
 
-## Complete Security Stack
+## Attack Timeline Example
 
-Your website now has 4 layers of security:
-
-1. ✅ **Bcrypt Password Hashing** - Passwords encrypted
-2. ✅ **Input Validation & Sanitization** - XSS/SQL injection prevented
-3. ✅ **Session Timeout & Tokens** - Session hijacking prevented
-4. ✅ **Rate Limiting & reCAPTCHA v3** - Brute force attacks prevented
-
-**Your website is PRODUCTION-READY secure!** 🔒🛡️
-
----
-
-## Implementation Summary
-
-| Security Feature          | Status         | Protection Level |
-| ------------------------- | -------------- | ---------------- |
-| Password Hashing (Bcrypt) | ✅ Implemented | Very High        |
-| Input Validation          | ✅ Implemented | Very High        |
-| Session Timeout (30 min)  | ✅ Implemented | High             |
-| Activity Tracking         | ✅ Implemented | High             |
-| Token Management          | ✅ Implemented | High             |
-| XSS Prevention            | ✅ Implemented | Very High        |
-| SQL Injection Prevention  | ✅ Implemented | Very High        |
-
----
-
-## Threats Prevented
-
-| Threat                  | Protection                                     |
-| ----------------------- | ---------------------------------------------- |
-| Stealing User Passwords | ✅ Bcrypt hashing (irreversible)               |
-| Session Hijacking       | ✅ 30-min timeout + token expiration           |
-| XSS Attacks             | ✅ Input sanitization (HTML/script removal)    |
-| SQL Injection           | ✅ Input validation (dangerous char rejection) |
-| Credential Reuse        | ✅ Session tokens expire                       |
-| Brute Force Attacks     | ✅ Limited 30-minute window                    |
-| Unauthorized Access     | ✅ Session verification before operations      |
-
----
-
-## How to Test
-
-### Test Session Timeout
-
-1. Log in to your account
-2. Do nothing for 30 minutes
-3. Expected: You'll be automatically logged out with a notification
-
-### Test Session Verification
-
-1. Log in
-2. Go to checkout
-3. Wait 30+ minutes
-4. Try to place an order
-5. Expected: You'll be asked to log in again
-
-### Test Activity Tracking
-
-1. Log in
-2. Interact with the page (click, type, scroll)
-3. Expected: Session stays active as long as you interact
-
----
-
-**Last Updated**: November 26, 2025  
-**Security Level**: 🟢 HIGH (3/3 solutions implemented)
+| Time  | Event           | Result                            |
+| ----- | --------------- | --------------------------------- |
+| 0:00  | Attempt 1 fails | "4 attempts remaining"            |
+| 0:05  | Attempt 2 fails | "3 attempts remaining"            |
+| 0:10  | Attempt 3 fails | "2 attempts remaining"            |
+| 0:15  | Attempt 4 fails | "1 attempt remaining"             |
+| 0:20  | Attempt 5 fails | **Account locked for 15 minutes** |
+| 0:21  | Try again       | "Account locked. 14:59 remaining" |
+| 15:20 | After 15 min    | ✅ Lockout cleared, can try again |
