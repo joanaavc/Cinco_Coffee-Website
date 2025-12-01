@@ -3,19 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cinco Coffee - On-The-Go Coffee</title>
+    <title>Cinco Coffee - Products</title>
+
+    <!-- Google Fonts (Poppins + Playfair Display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+
+    <!-- Unified Cinco Coffee Stylesheet -->
     <link rel="stylesheet" href="cincostyles.css" />
   </head>
+
   <body>
     <!-- Header -->
     <header>
@@ -26,9 +33,34 @@
             Cinco<span>Coffee</span>
           </a>
 
+          <!-- Desktop User Controls -->
+          <div
+            id="userControls"
+            style="display: none; align-items: center; gap: 8px"
+          >
+            <span id="userName" style="font-weight: 500"></span>
+            <button
+              id="logoutBtn"
+              class="logout-btn"
+              title="Logout"
+              style="
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+                color: var(--primary-color);
+                display: none;
+              "
+              aria-label="Logout"
+              type="button"
+            >
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+          <!-- ...existing code... -->
+
           <nav>
             <ul class="nav-links">
-              <li id="mobileUserGreeting"></li>
               <li><a href="index.html">Home</a></li>
               <li><a href="about us.html">About Us</a></li>
               <li><a href="productupdate.html" class="active">Products</a></li>
@@ -54,32 +86,116 @@
       </div>
     </section>
 
-    <!-- Cart Button -->
-    <div class="cart-btn">
+    <!-- Fixed Cart Button -->
+    <button
+      class="cart-btn"
+      type="button"
+      aria-label="Shopping Cart"
+      style="position: fixed; top: 80px; right: 20px; z-index: 99999"
+    >
       <i class="fas fa-shopping-cart"></i>
-      <span class="cart-count">0</span>
-    </div>
+      <span class="cart-count" style="display: none">0</span>
+    </button>
 
     <!-- Cart Modal -->
-    <div class="cart-modal">
-      <div class="cart-header">
-        <h3 class="cart-title">Your Basket</h3>
-        <span class="close-cart">&times;</span>
+    <div
+      id="cartModal"
+      class="cart-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        max-width: 420px;
+        height: 100vh;
+        background: white;
+        z-index: 1000;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
+      "
+    >
+      <div
+        class="modal-header"
+        style="
+          padding: 20px;
+          border-bottom: 1px solid #f0e8df;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h2 style="font-size: 18px; margin: 0">Your Cart</h2>
+        <button
+          class="close-cart"
+          style="
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+          "
+        >
+          ✕
+        </button>
       </div>
-      <div class="cart-items">
-        <!-- Cart items will be added here dynamically -->
+
+      <div class="cart-items" style="padding: 16px">
+        <!-- JS will populate items here -->
       </div>
-      <div class="cart-total">Total: ₱<span class="total-amount">0</span></div>
-      <button class="checkout-btn" onclick="proceedToCheckout()">
-        Proceed to Checkout
-      </button>
+
+      <div
+        class="modal-footer"
+        style="
+          padding: 16px;
+          border-top: 1px solid #f0e8df;
+          background: #f9f7f4;
+        "
+      >
+        <div
+          class="cart-total"
+          style="
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 12px;
+            text-align: right;
+          "
+        >
+          ₱0.00
+        </div>
+        <button
+          class="checkout-btn"
+          type="button"
+          style="
+            width: 100%;
+            padding: 12px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          Proceed to Checkout
+        </button>
+      </div>
     </div>
 
-    <!-- Notification -->
-    <div class="notification">Item added to cart!</div>
-
-    <!-- Overlay -->
-    <div class="overlay"></div>
+    <!-- Overlay (for modal backdrop) -->
+    <div
+      class="overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 999;
+      "
+    ></div>
 
     <!-- Products Section -->
     <section class="products" id="products">
@@ -641,6 +757,8 @@
       <i class="fas fa-arrow-up"></i>
     </div>
 
+    <!-- Your other scripts / page scripts -->
+    <!-- Ensure cart script loads after DOM elements -->
     <script src="cincoscript.js"></script>
   </body>
 </html>
