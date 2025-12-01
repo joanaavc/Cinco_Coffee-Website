@@ -17,13 +17,6 @@
     <link rel="stylesheet" href="cincostyles.css" />
   </head>
   <body>
-    <!-- Circular Logo Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-      <div class="loading-circle">
-        <img src="assets/logo.png" alt="Cinco Coffee" class="circular-logo" />
-      </div>
-    </div>
-
     <!-- Header -->
     <header>
       <div class="container">
@@ -33,19 +26,33 @@
             Cinco<span>Coffee</span>
           </a>
 
-          <!-- Desktop User Controls (Upper Right) -->
-          <div id="userControls" style="display: none"></div>
-
-          <div class="user-auth-section">
-            <span id="currentUserDisplay" class="user-email"></span>
-            <button data-logout class="btn btn-logout">
-              <i class="fas fa-sign-out-alt"></i> Logout
+          <!-- Desktop User Controls -->
+          <div
+            id="userControls"
+            style="display: flex; align-items: center; gap: 8px"
+          >
+            <span id="userName" style="font-weight: 500; display: none"></span>
+            <button
+              id="logoutBtn"
+              class="logout-btn"
+              title="Logout"
+              style="
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+                color: var(--primary-color);
+                display: none;
+              "
+              aria-label="Logout"
+              type="button"
+            >
+              <i class="fas fa-sign-out-alt"></i>
             </button>
           </div>
 
-          <nav>
+          <nav class="main-nav">
             <ul class="nav-links">
-              <li id="mobileUserGreeting"></li>
               <li><a href="index.html">Home</a></li>
               <li><a href="about us.html">About Us</a></li>
               <li><a href="productupdate.html">Products</a></li>
@@ -74,7 +81,7 @@
         <div class="hero-btns">
           <a href="productupdate.html" class="btn">Explore Our Products</a>
           <a href="contact.html" class="btn btn-transparent">Find Us</a>
-          <a id="authBtn" href="logSign.html" class="btn btn-accent"
+          <a href="logSign.html" class="btn btn-accent auth-link"
             >Sign Up / Log In</a
           >
         </div>
@@ -152,13 +159,14 @@
       <div class="container">
         <h2 class="section-title popular-title">Our Most Loved Drinks</h2>
         <div class="products-slider">
+          <!-- Sea Salt Latte -->
           <div class="product-card">
             <div class="product-img">
               <img src="assets/sea salt latte.png" alt="Sea Salt Latte" />
             </div>
             <div class="product-info">
-              <h3>Sea Salt Latte</h3>
-              <p>
+              <h3 class="product-name">Sea Salt Latte</h3>
+              <p class="product-description">
                 A unique combination of sweetness and a hint of salt for a rich
                 flavor experience.
               </p>
@@ -170,25 +178,28 @@
                 <span>350ml</span>
                 <span class="price-tag">₱100</span>
               </div>
-              <button
-                class="btn add-to-cart"
-                data-name="Sea Salt Latte"
-                data-price="100"
-                data-img="assets/sea salt latte.png"
-                data-size="350ml"
-              >
-                Add to Cart
-              </button>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Sea Salt Latte (16oz)"
+                  data-price="100"
+                  data-size="16oz"
+                  data-img="assets/sea salt latte.png"
+                >
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- White Choco Mocha -->
           <div class="product-card">
             <div class="product-img">
               <img src="assets/white choco mocha.png" alt="White Choco Mocha" />
             </div>
             <div class="product-info">
-              <h3>White Choco Mocha</h3>
-              <p>
+              <h3 class="product-name">White Choco Mocha</h3>
+              <p class="product-description">
                 A delicious blend of espresso, white chocolate, and steamed
                 milk.
               </p>
@@ -200,72 +211,82 @@
                 <span>350ml</span>
                 <span class="price-tag">₱100</span>
               </div>
-              <button
-                class="btn add-to-cart"
-                data-name="White Choco Mocha"
-                data-price="100"
-                data-img="assets/white choco mocha.png"
-                data-size="350ml"
-              >
-                Add to Cart
-              </button>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="White Choco Mocha (16oz)"
+                  data-price="100"
+                  data-size="16oz"
+                  data-img="assets/white choco mocha.png"
+                >
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- Spanish Latte -->
           <div class="product-card">
             <div class="product-img">
               <img src="assets/spanish latte.png" alt="Spanish Latte" />
             </div>
             <div class="product-info">
-              <h3>Spanish Latte</h3>
-              <p>
+              <h3 class="product-name">Spanish Latte</h3>
+              <p class="product-description">
                 A slightly sweet and rich coffee made with milk and a touch of
                 condensed milk.
               </p>
               <div class="product-price">
                 <span>16oz</span>
-                <span class="price-tag">₱90</span>
+                <span class="price-tag">₱100</span>
               </div>
               <div class="product-price">
                 <span>350ml</span>
-                <span class="price-tag">₱90</span>
+                <span class="price-tag">₱100</span>
               </div>
-              <button
-                class="btn add-to-cart"
-                data-name="Spanish Latte"
-                data-price="90"
-                data-img="assets/spanish latte.png"
-                data-size="350ml"
-              >
-                Add to Cart
-              </button>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Spanish Latte (16oz)"
+                  data-price="100"
+                  data-size="16oz"
+                  data-img="assets/spanish latte.png"
+                >
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- Milky Ube -->
           <div class="product-card">
             <div class="product-img">
               <img src="assets/ube.png" alt="Milky Ube" />
             </div>
             <div class="product-info">
-              <h3>Milky Ube</h3>
-              <p>A creamy and flavorful ube drink topped with sea salt foam.</p>
+              <h3 class="product-name">Milky Ube</h3>
+              <p class="product-description">
+                A creamy and flavorful ube drink topped with sea salt foam.
+              </p>
               <div class="product-price">
                 <span>16oz</span>
-                <span class="price-tag">₱90</span>
+                <span class="price-tag">₱100</span>
               </div>
               <div class="product-price">
                 <span>350ml</span>
-                <span class="price-tag">₱90</span>
+                <span class="price-tag">₱100</span>
               </div>
-              <button
-                class="btn add-to-cart"
-                data-name="Milky Ube"
-                data-price="90"
-                data-img="assets/ube.png"
-                data-size="350ml"
-              >
-                Add to Cart
-              </button>
+              <div class="add-to-cart-container">
+                <button
+                  class="add-to-cart-btn"
+                  data-name="Milky Ube (16oz)"
+                  data-price="100"
+                  data-size="16oz"
+                  data-img="assets/ube.png"
+                >
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
             </div>
           </div>
         </div>
