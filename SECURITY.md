@@ -62,7 +62,35 @@ User inputs pass through validation functions that:
 
 ---
 
-## Solution 3: Session Management with Auto-Timeout
+## Solution 3: HTTPS / SSL Encryption — Guideline & Implementation
+
+Site (deployed):
+
+- <https://joanaavc.github.io/IAS_Cinco-Website/>
+
+Verification & testing:
+
+- Use browser address bar to confirm the padlock icon and valid certificate for the deployed site.
+- Run SSL/TLS checks (e.g., Qualys SSL Labs) against custom domains if available.
+- Test mixed-content, HSTS behavior, and CSP with browser devtools and automated scanners.
+
+Deployment checklist (quick):
+
+- [ ] GitHub Pages enabled and working (see site: <https://joanaavc.github.io/IAS_Cinco-Website/>)
+- [ ] "Enforce HTTPS" active (if custom domain supported)
+- [ ] All external resources referenced via HTTPS
+- [ ] Forms and API calls use HTTPS endpoints
+- [ ] Mixed-content warnings resolved
+- [ ] Consider HSTS via CDN or custom host if stronger guarantees required
+
+Limitations & notes:
+
+- GitHub Pages provides TLS for hosted content, but fine-grained HTTP header control (HSTS, CSP) may be limited. Use a CDN or server-side host for advanced header controls.
+- TLS protects data in transit only — server-side protections are still required for authentication, session management, and data storage.
+
+---
+
+## Solution 4: Session Management with Auto-Timeout
 
 ### Automatic Session Timeout
 
@@ -96,7 +124,7 @@ const SESSION_MONITOR_INTERVAL = 30000; // Check every 30 seconds
 
 ---
 
-## Solution 4: Rate Limiting and CAPTCHA Protection
+## Solution 5: Rate Limiting and CAPTCHA Protection
 
 ### What I Added
 
