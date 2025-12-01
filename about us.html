@@ -27,9 +27,33 @@
             Cinco<span>Coffee</span>
           </a>
 
+          <!-- Desktop User Controls -->
+          <div
+            id="userControls"
+            style="display: none; align-items: center; gap: 8px"
+          >
+            <span id="userName" style="font-weight: 500"></span>
+            <button
+              id="logoutBtn"
+              class="logout-btn"
+              title="Logout"
+              style="
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+                color: var(--primary-color);
+                display: none;
+              "
+              aria-label="Logout"
+              type="button"
+            >
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+
           <nav>
             <ul class="nav-links">
-              <li id="mobileUserGreeting"></li>
               <li><a href="index.html">Home</a></li>
               <li><a href="about us.html" class="active">About Us</a></li>
               <li><a href="productupdate.html">Products</a></li>
