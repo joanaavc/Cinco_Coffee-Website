@@ -1330,6 +1330,73 @@
   }
 
   // ============================================
+  // HAMBURGER MENU TOGGLE - FIXED VERSION
+  // ============================================
+  function initHamburgerMenu() {
+    const hamburger = document.querySelector(".hamburger");
+    const navLinks = document.querySelector("nav ul");
+
+    if (!hamburger || !navLinks) {
+      console.log("ℹ️ Hamburger or nav not found (expected on some pages)");
+      return;
+    }
+
+    console.log("✓ Initializing hamburger menu");
+
+    // Ensure hamburger is clickable
+    hamburger.style.cursor = "pointer";
+    hamburger.style.pointerEvents = "auto";
+    hamburger.style.position = "relative";
+    hamburger.style.zIndex = "1001";
+
+    // Toggle function
+    const toggleMenu = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      navLinks.classList.toggle("active");
+      hamburger.classList.toggle("active");
+
+      // Prevent body scroll when menu is open
+      if (navLinks.classList.contains("active")) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+
+      console.log("Menu toggled:", navLinks.classList.contains("active"));
+    };
+
+    // Bind click event
+    hamburger.addEventListener("click", toggleMenu);
+    hamburger.addEventListener("touchstart", toggleMenu, { passive: false });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("active");
+        hamburger.classList.remove("active");
+        document.body.style.overflow = "";
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        if (navLinks.classList.contains("active")) {
+          navLinks.classList.remove("active");
+          hamburger.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      }
+    });
+
+    console.log("✓ Hamburger menu initialized");
+  }
+
+  // ============================================
   // FEEDBACK FORM (contact.html)
   // ============================================
   function initFeedbackForm() {
@@ -2489,6 +2556,12 @@
       console.error("initFeedbackForm error:", e);
     }
 
+    try {
+      initHamburgerMenu();
+    } catch (e) {
+      console.error("initHamburgerMenu error:", e);
+    }
+
     // One-time migration: sanitize any previously saved feedbacks in localStorage
     function sanitizeStoredFeedbacks() {
       if (typeof sanitizeInput !== "function") {
@@ -2812,8 +2885,6 @@
 
         return;
       }
-
-      // ...rest of checkout code...
     });
   }
 })();
