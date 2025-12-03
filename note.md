@@ -1,6 +1,4 @@
-# Appendix C: Detailed Test Results & Security Scans
-
-## 1. OWASP ZAP Security Scan Report
+## C. 1. OWASP ZAP Security Scan Report
 **Scan Date:** December 4, 2025  
 **Target:** https://joanaavc.github.io/IAS_Cinco-Website/  
 **Scan Duration:** 5m 10s  
@@ -109,7 +107,7 @@ Recommendation: Ensure crypto.getRandomValues() used where available; document f
 
 ---
 
-## 2. Input Validation & Sanitization Audit
+## C. 2. Input Validation & Sanitization Audit
 
 ### Test Cases Run: 45  
 **Pass Rate:** 45/45 (100%) ✅
@@ -122,7 +120,7 @@ Recommendation: Ensure crypto.getRandomValues() used where available; document f
 
 ---
 
-## 3. Password Hashing & Comparison Tests
+## C. 3. Password Hashing & Comparison Tests
 
 ```
 Bcrypt tests: 12/12 PASS
@@ -133,7 +131,7 @@ No plaintext passwords stored; comparison and invalid-hash handling tested
 
 ---
 
-## 4. Authentication & Session Management Tests
+## C.4. Authentication & Session Management Tests
 
 - Rate limiting: MAX_LOGIN_ATTEMPTS = 5, LOCKOUT_MS = 15 minutes — behavior verified.
 - Session timeout: 30 minutes idle — validated.
@@ -143,21 +141,21 @@ No plaintext passwords stored; comparison and invalid-hash handling tested
 
 ---
 
-## 5. reCAPTCHA v3 Integration Tests
+## C.5. reCAPTCHA v3 Integration Tests
 
 - Script loading and token generation verified in integration tests (client-side).  
 - Backend verification required to use tokens for enforcement — recommended.
 
 ---
 
-## 6. Cart Integrity Verification Tests
+## C.6. Cart Integrity Verification Tests
 
 - verifyCartIntegrity() correctly detects price tampering, negative/zero prices, unknown items.  
 - Demo site behavior: client-side cart checks function; back-end validation still recommended for production orders.
 
 ---
 
-## 7. Penetration Test Summary
+## C.7. Penetration Test Summary
 
 **Tester:** Internal QA  
 **Date:** December 1–4, 2025  
@@ -175,7 +173,7 @@ Notes:
 
 ---
 
-## 8. Performance Testing Results (summary)
+## C.8. Performance Testing Results (summary)
 
 - Email validation, sanitization, cart integrity: <5ms typical.
 - bcrypt hash: ~480–500ms on test machines.
