@@ -26,6 +26,7 @@ To establish Cinco Coffee's digital presence, enable e-commerce functionality fo
 - `contact.html` – Contact information, business hours, and feedback form
 - `checkout.html` – Order processing with customer information and payment methods
 - `cincostyles.css` – Main stylesheet with responsive design
+- `logSign.html` - Login and Signup page for customers who wants to order from the website
 - `assets/` – Product images and brand visuals
 
 ## Design Concept
